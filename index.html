@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STANLEY | Victory Royale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Burbank+Big+Condensed:wght@700&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fortnite: {
+                            purple: '#9d4edd',
+                            blue: '#00d4ff',
+                            yellow: '#ffff00',
+                            orange: '#ff6b35',
+                            dark: '#1a1a2e',
+                            darker: '#0f0f1a',
+                        }
+                    },
+                    fontFamily: {
+                        fortnite: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            overflow-x: hidden;
+        }
+
+        .fortnite-title {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(180deg, #ffff00 0%, #ff6b35 50%, #ff4500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.5));
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff;
+        }
+
+        .battle-pass-card {
+            background: linear-gradient(145deg, rgba(157, 78, 221, 0.3) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            backdrop-filter: blur(10px);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+        }
+
+        .legendary-glow {
+            box-shadow: 0 0 30px rgba(255, 165, 0, 0.5), inset 0 0 30px rgba(255, 165, 0, 0.1);
+            border: 2px solid #ffa500;
+        }
+
+        .epic-glow {
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.5), inset 0 0 30px rgba(157, 78, 221, 0.1);
+            border: 2px solid #9d4edd;
+        }
+
+        .rare-glow {
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5), inset 0 0 30px rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+        }
+
+        .storm-bg {
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(157, 78, 221, 0.2) 50%, rgba(157, 78, 221, 0.4) 100%);
+        }
+
+        .victory-btn {
+            background: linear-gradient(180deg, #ffff00 0%, #ffa500 100%);
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+            transition: all 0.3s ease;
+        }
+
+        .victory-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .storm-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid rgba(157, 78, 221, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .llama-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffff00 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .slant-section {
+            clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+        }
+
+        .nav-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #9d4edd);
+            transition: left 0.3s ease;
+        }
+
+        .nav-item:hover::after {
+            left: 0;
+        }
+
+        .battle-bus {
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+        }
+
+        .supply-drop {
+            background: linear-gradient(180deg, #4a90d9 0%, #2d5aa0 100%);
+            clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 100%, 0% 100%, 0% 20%);
+        }
+
+        .stat-bar {
+            background: linear-gradient(90deg, #00d4ff 0%, #9d4edd 100%);
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .rarity-legendary { border-left: 4px solid #ffa500; }
+        .rarity-epic { border-left: 4px solid #9d4edd; }
+        .rarity-rare { border-left: 4px solid #00d4ff; }
+        .rarity-uncommon { border-left: 4px solid #00ff00; }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Particles Container -->
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 bg-fortnite-darker/90 backdrop-blur-md border-b border-fortnite-blue/20">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="text-3xl font-black tracking-wider fortnite-title">STANLEY</div>
+            </div>
+            <div class="hidden md:flex gap-8">
+                <a href="#home" class="nav-item py-2 text-gray-300 hover:text-fortnite-blue transition-colors font-semibold">HOME</a>
+                <a href="#about" class="nav-item py-2 text-gray-300 hover:text-fortnite-blue transition-colors font-semibold">ABOUT</a>
+                <a href="#skills" class="nav-item py-2 text-gray-300 hover:text-fortnite-blue transition-colors font-semibold">SKILLS</a>
+                <a href="#stats" class="nav-item py-2 text-gray-300 hover:text-fortnite-blue transition-colors font-semibold">STATS</a>
+                <a href="#contact" class="nav-item py-2 text-gray-300 hover:text-fortnite-blue transition-colors font-semibold">CONTACT</a>
+            </div>
+            <button class="victory-btn px-6 py-3 text-fortnite-darker font-bold uppercase tracking-wide">
+                Join Squad
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://static0.anpoimages.com/wordpress/wp-content/uploads/2022/12/fortnite-hero-december.jpg?q=50&fit=crop&w=480&h=270&dpr=1.5"
+                 alt="Fortnite"
+                 class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-b from-fortnite-darker/80 via-fortnite-dark/60 to-fortnite-darker"></div>
+        </div>
+
+        <!-- Storm Circles Background -->
+        <div class="storm-circle w-[800px] h-[800px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="storm-circle w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="animation-delay: 0.5s;"></div>
+        <div class="storm-circle w-[400px] h-[400px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="animation-delay: 1s;"></div>
+
+        <div class="relative z-10 text-center px-6">
+            <div id="hero-badge" class="inline-block px-4 py-2 bg-fortnite-purple/30 border border-fortnite-purple rounded-full mb-6">
+                <span class="text-fortnite-purple font-semibold">CHAPTER 7 - SEASON 1</span>
+            </div>
+
+            <h1 id="hero-title" class="text-7xl md:text-9xl font-black fortnite-title mb-4">
+                STANLEY
+            </h1>
+
+            <p id="hero-subtitle" class="text-2xl md:text-4xl text-fortnite-blue glow-text font-bold mb-2">
+                #1 VICTORY ROYALE
+            </p>
+
+            <p id="hero-desc" class="text-xl text-gray-400 max-w-2xl mx-auto mb-10">
+                Drop in and experience the ultimate landing page.
+                Where legends are made and victories are claimed.
+            </p>
+
+            <div id="hero-buttons" class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="victory-btn px-10 py-4 text-xl font-bold text-fortnite-darker uppercase tracking-wider">
+                    Play Now
+                </button>
+                <button class="px-10 py-4 text-xl font-bold uppercase tracking-wider border-2 border-fortnite-blue text-fortnite-blue hover:bg-fortnite-blue/20 transition-all" style="clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);">
+                    Watch Trailer
+                </button>
+            </div>
+
+            <!-- Battle Pass Progress -->
+            <div id="battle-pass" class="mt-16 max-w-md mx-auto">
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="text-fortnite-yellow font-bold">BATTLE PASS</span>
+                    <span class="text-gray-400">Level 100</span>
+                </div>
+                <div class="h-3 bg-fortnite-darker rounded-full overflow-hidden">
+                    <div class="stat-bar h-full w-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating V-Bucks -->
+        <div class="absolute top-20 right-20 floating opacity-50">
+            <div class="text-6xl">V</div>
+        </div>
+        <div class="absolute bottom-40 left-20 floating opacity-30" style="animation-delay: 1s;">
+            <div class="text-4xl text-fortnite-yellow">V</div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="relative py-32 storm-bg">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div id="about-content">
+                    <div class="inline-block px-4 py-2 bg-fortnite-orange/20 border border-fortnite-orange rounded-full mb-6">
+                        <span class="text-fortnite-orange font-semibold uppercase tracking-wider">Legendary Skin</span>
+                    </div>
+                    <h2 class="text-5xl md:text-6xl font-black fortnite-title mb-6">
+                        WHO IS STANLEY?
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-6 leading-relaxed">
+                        Stanley isn't just a player - Stanley is a legend. Born from the storm and forged in Tilted Towers,
+                        Stanley has been dropping in since the very beginning.
+                    </p>
+                    <p class="text-lg text-gray-400 mb-8">
+                        With over 10,000 Victory Royales and a K/D ratio that makes even the pros sweat,
+                        Stanley is here to show you what a true champion looks like.
+                    </p>
+
+                    <div class="flex gap-6">
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-fortnite-yellow">10K+</div>
+                            <div class="text-gray-400">Wins</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-fortnite-blue">500K+</div>
+                            <div class="text-gray-400">Eliminations</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-fortnite-purple">99%</div>
+                            <div class="text-gray-400">Accuracy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="about-visual" class="relative">
+                    <div class="battle-pass-card p-8 legendary-glow">
+                        <div class="text-center">
+                            <img src="IMG_4664.webp" alt="Stanley's Icon Skins" class="w-full h-auto rounded-lg mb-4">
+                            <div class="text-sm text-fortnite-orange uppercase tracking-wider mb-2">Locker Collection</div>
+                            <div class="text-3xl font-black">STANLEY'S ICON SKINS</div>
+                            <div class="text-gray-400 mt-2">The Ultimate Collection</div>
+
+                            <div class="mt-6 pt-6 border-t border-white/10">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-400">Rarity</span>
+                                    <span class="text-fortnite-blue font-bold">ICON</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-400">Set</span>
+                                    <span class="text-white font-bold">STANLEY COLLECTION</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sparkle Effects -->
+                    <div class="sparkle top-0 right-0 animate-ping"></div>
+                    <div class="sparkle bottom-10 left-0 animate-ping" style="animation-delay: 0.5s;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section (Item Shop Style) -->
+    <section id="skills" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-block px-4 py-2 bg-fortnite-blue/20 border border-fortnite-blue rounded-full mb-6">
+                    <span class="text-fortnite-blue font-semibold uppercase tracking-wider">Item Shop</span>
+                </div>
+                <h2 class="text-5xl md:text-6xl font-black fortnite-title">SKILL LOADOUT</h2>
+            </div>
+
+            <div id="skills-grid" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Skill Card 1 -->
+                <div class="skill-card battle-pass-card p-6 legendary-glow hover:scale-105 transition-transform cursor-pointer">
+                    <div class="text-center">
+                        <div class="text-5xl mb-4">🏗️</div>
+                        <div class="text-xs text-fortnite-orange uppercase tracking-wider mb-2">Legendary</div>
+                        <div class="text-xl font-bold mb-2">Building</div>
+                        <div class="text-sm text-gray-400">90s cranking in 0.2 seconds</div>
+                    </div>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="skill-card battle-pass-card p-6 epic-glow hover:scale-105 transition-transform cursor-pointer">
+                    <div class="text-center">
+                        <div class="text-5xl mb-4">🎯</div>
+                        <div class="text-xs text-fortnite-purple uppercase tracking-wider mb-2">Epic</div>
+                        <div class="text-xl font-bold mb-2">Aim</div>
+                        <div class="text-sm text-gray-400">Headshots only, no exceptions</div>
+                    </div>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="skill-card battle-pass-card p-6 rare-glow hover:scale-105 transition-transform cursor-pointer">
+                    <div class="text-center">
+                        <div class="text-5xl mb-4">🧠</div>
+                        <div class="text-xs text-fortnite-blue uppercase tracking-wider mb-2">Rare</div>
+                        <div class="text-xl font-bold mb-2">Game Sense</div>
+                        <div class="text-sm text-gray-400">Always knows where you are</div>
+                    </div>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="skill-card battle-pass-card p-6 epic-glow hover:scale-105 transition-transform cursor-pointer">
+                    <div class="text-center">
+                        <div class="text-5xl mb-4">⚡</div>
+                        <div class="text-xs text-fortnite-purple uppercase tracking-wider mb-2">Epic</div>
+                        <div class="text-xl font-bold mb-2">Edit Speed</div>
+                        <div class="text-sm text-gray-400">Windows before you blink</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="py-32 storm-bg slant-section">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="text-center mb-16">
+                <div class="inline-block px-4 py-2 bg-fortnite-purple/20 border border-fortnite-purple rounded-full mb-6">
+                    <span class="text-fortnite-purple font-semibold uppercase tracking-wider">Career Stats</span>
+                </div>
+                <h2 class="text-5xl md:text-6xl font-black fortnite-title">GAME STATS</h2>
+            </div>
+
+            <div id="stats-container" class="grid md:grid-cols-3 gap-8">
+                <!-- Solo Stats -->
+                <div class="bg-fortnite-darker/80 p-6 rounded-lg rarity-legendary">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="text-3xl">👤</div>
+                        <div>
+                            <div class="text-fortnite-orange font-bold uppercase">Solo</div>
+                            <div class="text-sm text-gray-400">Matches Played: 5,420</div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Win Rate</span>
+                                <span class="text-fortnite-yellow">42%</span>
+                            </div>
+                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-fortnite-yellow to-fortnite-orange" style="width: 42%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>K/D Ratio</span>
+                                <span class="text-fortnite-blue">8.5</span>
+                            </div>
+                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-fortnite-blue to-fortnite-purple" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Duo Stats -->
+                <div class="bg-fortnite-darker/80 p-6 rounded-lg rarity-epic">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="text-3xl">👥</div>
+                        <div>
+                            <div class="text-fortnite-purple font-bold uppercase">Duos</div>
+                            <div class="text-sm text-gray-400">Matches Played: 3,210</div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Win Rate</span>
+                                <span class="text-fortnite-yellow">38%</span>
+                            </div>
+                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-fortnite-yellow to-fortnite-orange" style="width: 38%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>K/D Ratio</span>
+                                <span class="text-fortnite-blue">7.2</span>
+                            </div>
+                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-fortnite-blue to-fortnite-purple" style="width: 72%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Squad Stats -->
+                <div class="bg-fortnite-darker/80 p-6 rounded-lg rarity-rare">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="text-3xl">👨‍👩‍👧‍👦</div>
+                        <div>
+                            <div class="text-fortnite-blue font-bold uppercase">Squads</div>
+                            <div class="text-sm text-gray-400">Matches Played: 2,890</div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Win Rate</span>
+                                <span class="text-fortnite-yellow">52%</span>
+                            </div>
+                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-fortnite-yellow to-fortnite-orange" style="width: 52%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>K/D Ratio</span>
+                                <span class="text-fortnite-blue">6.8</span>
+                            </div>
+                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-fortnite-blue to-fortnite-purple" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="inline-block px-4 py-2 bg-fortnite-yellow/20 border border-fortnite-yellow rounded-full mb-6">
+                <span class="text-fortnite-yellow font-semibold uppercase tracking-wider">Supply Drop Incoming</span>
+            </div>
+            <h2 class="text-5xl md:text-6xl font-black fortnite-title mb-6">JOIN THE SQUAD</h2>
+            <p class="text-xl text-gray-400 mb-12">
+                Ready to squad up? Drop your info and let's catch that Victory Royale together.
+            </p>
+
+            <div id="contact-form" class="battle-pass-card p-8 max-w-xl mx-auto">
+                <form class="space-y-6">
+                    <div>
+                        <input type="text" placeholder="Your Epic Name"
+                            class="w-full px-6 py-4 bg-fortnite-darker border border-fortnite-purple/30 rounded-lg focus:outline-none focus:border-fortnite-blue text-white placeholder-gray-500">
+                    </div>
+                    <div>
+                        <input type="email" placeholder="Your Email"
+                            class="w-full px-6 py-4 bg-fortnite-darker border border-fortnite-purple/30 rounded-lg focus:outline-none focus:border-fortnite-blue text-white placeholder-gray-500">
+                    </div>
+                    <div>
+                        <textarea rows="4" placeholder="Your Message (Ready up!)"
+                            class="w-full px-6 py-4 bg-fortnite-darker border border-fortnite-purple/30 rounded-lg focus:outline-none focus:border-fortnite-blue text-white placeholder-gray-500 resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="victory-btn w-full py-4 text-xl font-bold text-fortnite-darker uppercase tracking-wider">
+                        Send Drop
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-fortnite-purple/20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-3xl font-black fortnite-title">STANLEY</div>
+                <div class="flex gap-6">
+                    <a href="#" class="text-gray-400 hover:text-fortnite-blue transition-colors text-2xl">𝕏</a>
+                    <a href="#" class="text-gray-400 hover:text-fortnite-purple transition-colors text-2xl">📸</a>
+                    <a href="#" class="text-gray-400 hover:text-fortnite-yellow transition-colors text-2xl">🎮</a>
+                    <a href="#" class="text-gray-400 hover:text-fortnite-orange transition-colors text-2xl">🎥</a>
+                </div>
+                <div class="text-gray-500 text-sm">
+                    2026 Stanley. All Victory Royales Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
+                container.appendChild(particle);
+
+                gsap.to(particle, {
+                    y: -window.innerHeight,
+                    x: (Math.random() - 0.5) * 200,
+                    duration: Math.random() * 10 + 10,
+                    repeat: -1,
+                    ease: 'none',
+                    delay: Math.random() * 10
+                });
+            }
+        }
+        createParticles();
+
+        // Hero animations
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        heroTl
+            .from('#hero-badge', { opacity: 0, y: 30, duration: 0.8 })
+            .from('#hero-title', { opacity: 0, y: 50, scale: 0.8, duration: 1 }, '-=0.4')
+            .from('#hero-subtitle', { opacity: 0, y: 30, duration: 0.8 }, '-=0.6')
+            .from('#hero-desc', { opacity: 0, y: 20, duration: 0.8 }, '-=0.4')
+            .from('#hero-buttons', { opacity: 0, y: 20, duration: 0.8 }, '-=0.4')
+            .from('#battle-pass', { opacity: 0, y: 20, duration: 0.8 }, '-=0.4');
+
+        // Navbar animation on scroll
+        gsap.to('#navbar', {
+            scrollTrigger: {
+                trigger: '#home',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
+            },
+            backgroundColor: 'rgba(15, 15, 26, 0.98)'
+        });
+
+        // About section animations
+        gsap.from('#about-content', {
+            scrollTrigger: {
+                trigger: '#about',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 0,
+            x: -100,
+            duration: 1
+        });
+
+        gsap.from('#about-visual', {
+            scrollTrigger: {
+                trigger: '#about',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 0,
+            x: 100,
+            duration: 1,
+            delay: 0.2
+        });
+
+        // Skills cards animation
+        gsap.from('.skill-card', {
+            scrollTrigger: {
+                trigger: '#skills',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 0,
+            y: 50,
+            stagger: 0.15,
+            duration: 0.8
+        });
+
+        // Stats animation
+        gsap.from('#stats-container > div', {
+            scrollTrigger: {
+                trigger: '#stats',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 0,
+            y: 50,
+            stagger: 0.2,
+            duration: 0.8
+        });
+
+        // Contact form animation
+        gsap.from('#contact-form', {
+            scrollTrigger: {
+                trigger: '#contact',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 0,
+            y: 50,
+            duration: 1
+        });
+
+        // Hover effects for skill cards
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, { y: -10, duration: 0.3 });
+            });
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { y: 0, duration: 0.3 });
+            });
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Victory button pulse effect
+        gsap.to('.victory-btn', {
+            boxShadow: '0 0 30px rgba(255, 255, 0, 0.5)',
+            repeat: -1,
+            yoyo: true,
+            duration: 1.5,
+            ease: 'power1.inOut'
+        });
+    </script>
+</body>
+</html>
